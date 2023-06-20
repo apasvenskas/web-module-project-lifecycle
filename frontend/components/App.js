@@ -1,5 +1,7 @@
 import React from 'react'
 import axios from 'axios'
+import Form from './Form'
+import TodoList from './TodoList'
 
 const URL = 'http://localhost:9000/api/todos'
 
@@ -67,25 +69,20 @@ export default class App extends React.Component {
     return (
       <div>
         <div id="error">Error: {this.state.error} </div>
-          <div id="todos">
-            <h2>Todos</h2>
-            {
-              this.state.todos.reduce((acc, todo) => {
-                //debugger
-                if (this.state.displayCompleted || !todo.completed) return acc.concat(
-                  <div onClick={this.toggleCompleted(todo.id)} key={todo.id}> {todo.name}{todo.completed ? '✔️' : ''}</div>
-                )
-                return acc
-              }, [])
-               // return <div onClick={this.toggleCompleted(todo.id)} key={todo.id}> {todo.name}{todo.completed ? '✔️' : ''}</div>
-             // })
-            }
-          </div>
-          <form id='todoForm' onSubmit={this.onTodoFormSubmit}>
-            <input value={this.state.todoNameInput} onChange={this.todoNameInputChange} type='text' placeholder='Type todo'></input>
-            <input type='submit'></input>
-          </form>
-            <button onClick={this.toggleDispalyCompleted}> {this.state.displayCompleted ? 'Clear' : 'Show'} Completed</button> 
+        <TodoList 
+          todos={this.state.todos}
+          displayCompleted={this.state.displayCompleted}
+          toggleCompleted={this.toggleCompleted}
+        />
+        
+          {/* need to add props for the form to function as intended */}
+          <Form 
+            onTodoFormSubmit={this.onTodoFormSubmit}
+            todoNameInput={this.state.todoNameInput}
+            todoNameInputChange={this.todoNameInputChange}
+            toggleDispalyCompleted={this.toggleDispalyCompleted}
+            displayCompleted={this.state.displayCompleted}
+          />
       </div>
     )
   }
