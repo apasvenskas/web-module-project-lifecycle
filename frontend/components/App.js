@@ -9,6 +9,7 @@ export default class App extends React.Component {
       todos: [],
       error: '',
       todoNameInput: '',
+      displayCompleted: true,
   }
   todoNameInputChange = evt => {
     const { value } = evt.target
@@ -53,6 +54,11 @@ export default class App extends React.Component {
       })
       .catch(this.setAxiosResponseError)
   }
+
+  toggleDispalyCompleted = () => {
+    this.setState({...this.state, displayCompleted: !this.state.displayCompleted})
+  }
+
   componentDidMount() {
     // fetch from server (todos); 
     this.fetchAllTodos()
@@ -64,17 +70,22 @@ export default class App extends React.Component {
           <div id="todos">
             <h2>Todos</h2>
             {
-              this.state.todos.map(todo => {
-                return <div onClick={this.toggleCompleted(todo.id)} key={todo.id}> {todo.name}{todo.completed ? '✔️' : ''}</div>
-              })
+              this.state.todos.reduce((acc, todo) => {
+                //debugger
+                if (this.state.displayCompleted || !todo.completed) return acc.concat(
+                  <div onClick={this.toggleCompleted(todo.id)} key={todo.id}> {todo.name}{todo.completed ? '✔️' : ''}</div>
+                )
+                return acc
+              }, [])
+               // return <div onClick={this.toggleCompleted(todo.id)} key={todo.id}> {todo.name}{todo.completed ? '✔️' : ''}</div>
+             // })
             }
           </div>
           <form id='todoForm' onSubmit={this.onTodoFormSubmit}>
             <input value={this.state.todoNameInput} onChange={this.todoNameInputChange} type='text' placeholder='Type todo'></input>
             <input type='submit'></input>
-            <button>Clear Completed</button>
           </form>
-        
+            <button onClick={this.toggleDispalyCompleted}> {this.state.displayCompleted ? 'Clear' : 'Show'} Completed</button> 
       </div>
     )
   }
